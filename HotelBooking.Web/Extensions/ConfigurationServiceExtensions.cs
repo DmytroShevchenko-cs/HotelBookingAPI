@@ -1,6 +1,6 @@
 namespace HotelBooking.Web.Extensions;
 
-using Infrastructure.Configurations;
+using Shared.Common.Configurations;
 
 public static class ConfigurationServiceExtensions
 {
@@ -9,6 +9,7 @@ public static class ConfigurationServiceExtensions
         IConfiguration configuration)
     {
         services.Configure<ServerConfig>(configuration.GetSection(nameof(ServerConfig)));
+        services.Configure<AdminConfig>(configuration.GetSection(nameof(AdminConfig)));
 
         return services;
     }

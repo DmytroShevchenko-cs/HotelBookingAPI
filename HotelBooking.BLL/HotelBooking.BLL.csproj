@@ -12,18 +12,9 @@
     </ItemGroup>
 
     <ItemGroup>
-      <Folder Include="Commands\Booking\" />
-      <Folder Include="Commands\Hotel\" />
-      <Folder Include="Commands\Rooms\" />
       <Folder Include="Models\Booking\" />
       <Folder Include="Models\Hotel\" />
       <Folder Include="Models\Rooms\" />
-      <Folder Include="Queries\Booking\" />
-      <Folder Include="Queries\Hotel\" />
-      <Folder Include="Queries\Rooms\" />
-      <Folder Include="Services\BookingService\" />
-      <Folder Include="Services\HotelService\" />
-      <Folder Include="Services\RoomService\" />
     </ItemGroup>
     
 </Project>

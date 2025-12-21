@@ -11,7 +11,7 @@
         <PackageReference Include="FluentValidation" Version="12.1.1" />
         <PackageReference Include="FluentValidation.AspNetCore" Version="11.3.1" />
         <PackageReference Include="MediatR" Version="14.0.0" />
-        <PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="9.0.0"/>
+        <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="10.0.1" />
         <PackageReference Include="Microsoft.EntityFrameworkCore" Version="9.0.1" />
         <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="9.0.0">
           <PrivateAssets>all</PrivateAssets>
@@ -21,21 +21,14 @@
         <PackageReference Include="NodaTime" Version="3.2.3" />
         <PackageReference Include="NodaTime.Serialization.SystemTextJson" Version="1.3.0" />
         <PackageReference Include="Pomelo.EntityFrameworkCore.MySql" Version="9.0.0" />
-        <PackageReference Include="Swashbuckle.AspNetCore.Annotations" Version="10.1.0" />
-        <PackageReference Include="Swashbuckle.AspNetCore.Swagger" Version="10.1.0" />
-        <PackageReference Include="Swashbuckle.AspNetCore.SwaggerGen" Version="10.1.0" />
-        <PackageReference Include="Swashbuckle.AspNetCore.SwaggerUI" Version="10.1.0" />
+        <PackageReference Include="Swashbuckle.AspNetCore" Version="6.5.0" />
     </ItemGroup>
 
     <ItemGroup>
         <ProjectReference Include="..\HotelBooking.BLL\HotelBooking.BLL.csproj" />
+        <ProjectReference Include="..\HotelBooking.Database\HotelBooking.Database.csproj" />
         <ProjectReference Include="..\HotelBooking.DAL\HotelBooking.DAL.csproj" />
         <ProjectReference Include="..\HotelBooking.Shared\HotelBooking.Shared.csproj" />
-    </ItemGroup>
-
-    <ItemGroup>
-      <Folder Include="Controllers\" />
-      <Folder Include="DTOs\" />
     </ItemGroup>
 
 </Project>

@@ -1,54 +1,66 @@
 namespace HotelBooking.Web.Extensions;
 
 using BLL.Services.DatabaseMigrationService;
-using Infrastructure.Constants;
+using DAL.Database.Seed;
+using Microsoft.Extensions.Options;
 using Microsoft.OpenApi;
+using Microsoft.OpenApi.Models;
+using Shared.Common.Configurations;
+using Shared.Common.Constants;
 
 public static class WebApplicationExtensions
 {
-    extension(WebApplication app)
+    public static async Task ExecuteStartupActions(this WebApplication app)
     {
-        public async Task ExecuteStartupActions()
-        {
-            var serviceScopeFactory = app.Services.GetService<IServiceScopeFactory>();
-            using var scope = serviceScopeFactory!.CreateScope();
-            var migrationService = scope.ServiceProvider.GetRequiredService<IDatabaseMigrationService>();
-            await migrationService.MigrateAsync();
-        }
-
-        public void UseConfiguredSwagger()
-        {
-            app.UseRouting();
+        var serviceScopeFactory = app.Services.GetService<IServiceScopeFactory>();
+        var serviceProvider = serviceScopeFactory!.CreateScope().ServiceProvider;
         
-            app.UseCors(SwaggerConsts.CorsPolicy);
+        var migrationService = serviceProvider.GetRequiredService<IDatabaseMigrationService>();
+        await migrationService.MigrateAsync();
         
-            app.UseSwagger(c =>
-                {
-                    c.RouteTemplate = "/openapi/{documentName}.json";
-                    c.PreSerializeFilters.Add((swaggerDoc, httpReq) =>
-                    {
-                        var scheme = httpReq.Scheme;
-                        swaggerDoc.Servers = new List<OpenApiServer>
-                        {
-                            new()
-                            {
-                                Url = $"{scheme}://{httpReq.Host.Value}",
-                            },
-                        };
-                    });
-                })
-                .UseSwaggerUI(options =>
-                {
-                    options.RoutePrefix = "swagger";
+        var adminOptions = serviceProvider.GetRequiredService<IOptions<AdminConfig>>().Value;
+        await DatabaseSeed.SeedDefaultAdminUserAsync(serviceProvider, adminOptions);
+    }
 
-                    options.SwaggerEndpoint(
-                        $"/openapi/{SwaggerConsts.ApiDocName}.json",
-                        SwaggerConsts.ApiDocName);
+    public static void UseConfiguredSwagger(this WebApplication app)
+    {
+        app.UseRouting();
+        
+        app.UseCors(SwaggerConsts.CorsPolicy);
+        
+        app.UseSwagger(c =>
+        {
+            c.RouteTemplate = "/swagger/{documentName}.json";
+            c.PreSerializeFilters.Add((swaggerDoc, httpReq) =>
+            {
+                var openApiProperty = swaggerDoc.GetType().GetProperty("OpenApi");
+                if (openApiProperty != null && openApiProperty.CanWrite)
+                {
+                    openApiProperty.SetValue(swaggerDoc, "3.0.1");
+                }
 
-                    options.DefaultModelExpandDepth(2);
-                    options.DisplayRequestDuration();
-                    options.EnableValidator();
-                });
-        }
+                swaggerDoc.Servers =
+                [
+                    new OpenApiServer { Url = $"{httpReq.Scheme}://{httpReq.Host.Value}" },
+                ];
+            });
+        })
+        .UseSwaggerUI(options =>
+        {
+            options.RoutePrefix = "swagger";
+
+            options.SwaggerEndpoint(
+                $"/swagger/{SwaggerConsts.AdminDocName}.json",
+                SwaggerConsts.AdminDocName);
+            
+            options.SwaggerEndpoint(
+                $"/swagger/{SwaggerConsts.UserDocName}.json",
+                SwaggerConsts.UserDocName);
+
+            options.DefaultModelExpandDepth(2);
+            options.DisplayRequestDuration();
+            options.EnableValidator();
+            options.DocExpansion(Swashbuckle.AspNetCore.SwaggerUI.DocExpansion.List);
+        });
     }
 }

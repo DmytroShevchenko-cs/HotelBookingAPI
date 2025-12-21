@@ -2,10 +2,10 @@ namespace HotelBooking.Web.Extensions;
 
 using FluentValidation;
 using FluentValidation.AspNetCore;
-using Infrastructure.Configurations;
-using Infrastructure.Constants;
 using NodaTime;
 using NodaTime.Serialization.SystemTextJson;
+using Shared.Common.Configurations;
+using Shared.Common.Constants;
 
 public static class InfrastructureServiceExtensions
 {
@@ -14,9 +14,6 @@ public static class InfrastructureServiceExtensions
         IConfiguration configuration)
     {
         services.AddOptions();
-        services.AddSignalR();
-        services.AddMemoryCache();
-        services.AddHttpClient();
         
         var serverConfig = configuration
             .GetSection(nameof(ServerConfig))

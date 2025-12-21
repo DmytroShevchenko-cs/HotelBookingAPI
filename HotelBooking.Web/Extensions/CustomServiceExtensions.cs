@@ -2,6 +2,7 @@ namespace HotelBooking.Web.Extensions;
 
 using BLL.Services.DatabaseMigrationService;
 using DAL.Database;
+using DAL.Services.DatabaseMigrationService;
 
 public static class CustomServiceExtensions
 {

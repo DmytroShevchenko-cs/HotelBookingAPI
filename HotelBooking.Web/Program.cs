@@ -1,5 +1,6 @@
 namespace HotelBooking.Web;
 
+using System.IdentityModel.Tokens.Jwt;
 using Extensions;
 
 public class Program
@@ -13,17 +14,24 @@ public class Program
             .RegisterInfrastructureServices(builder.Configuration)
             .RegisterDatabaseAccess(builder.Configuration)
             .RegisterCustomServices()
-            .RegisterSwagger(builder.Configuration);
+            .RegisterIdentity(builder.Configuration)
+            .RegisterSwagger();
+        
+        JwtSecurityTokenHandler.DefaultInboundClaimTypeMap.Clear();
         
         var app = builder.Build();
         
+        app.UseStaticFiles();
         app.UseForwardedHeaders();
         app.UseExceptionHandler(_ => { });
         app.UseRouting();
         
+        app.UseAuthentication();
+        app.UseAuthorization();
+        
         app.UseConfiguredSwagger();
         
-        // app.MapControllers();
+        app.MapControllers();
         
         await app.ExecuteStartupActions();
         await app.RunAsync();
