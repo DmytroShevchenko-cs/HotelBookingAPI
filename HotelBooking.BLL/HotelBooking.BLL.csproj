@@ -15,6 +15,7 @@
       <Folder Include="Models\Booking\" />
       <Folder Include="Models\Hotel\" />
       <Folder Include="Models\Rooms\" />
+      <Folder Include="Services\" />
     </ItemGroup>
     
 </Project>

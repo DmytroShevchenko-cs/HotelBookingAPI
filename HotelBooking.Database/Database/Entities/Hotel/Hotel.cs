@@ -14,5 +14,7 @@ public class Hotel : BaseEntity
     public int CityId { get; set; }
     public City City { get; set; } = null!;
     
+    public bool IsDeleted { get; set; }
+    
     public ICollection<Room> Rooms { get; set; } = null!;
 }

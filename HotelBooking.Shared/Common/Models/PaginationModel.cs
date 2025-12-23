@@ -8,23 +8,23 @@ public class PaginationModel
 
     public int Offset
     {
-        get => this._offset;
+        get => _offset;
         set
         {
             if (value < 0)
                 value = 0;
-            this._offset = value;
+            _offset = value;
         }
     }
 
     public int PageSize
     {
-        get => this._pageSize;
+        get => _pageSize;
         set
         {
             if (value < 0)
                 value = 0;
-            this._pageSize = value > 150 ? 150 : value;
+            _pageSize = value > 150 ? 150 : value;
         }
     }
 }

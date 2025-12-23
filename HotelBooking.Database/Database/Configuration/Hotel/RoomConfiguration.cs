@@ -1,7 +1,6 @@
 namespace HotelBooking.DAL.Database.Configuration.Hotel;
 
 using Entities.Hotel;
-using Entities.Base;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 

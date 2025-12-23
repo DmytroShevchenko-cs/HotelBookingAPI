@@ -12,10 +12,6 @@ public class CityConfiguration : IEntityTypeConfiguration<City>
             .WithOne(r => r.City)
             .HasForeignKey(r => r.CityId);
         
-        builder.HasOne(r => r.Country)
-            .WithMany(r => r.Cities)
-            .HasForeignKey(r => r.CountryId);
-        
         builder.HasIndex(r => r.Name)
             .IsUnique();
         

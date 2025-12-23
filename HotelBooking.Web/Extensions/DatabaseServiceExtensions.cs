@@ -19,11 +19,10 @@ public static class DatabaseServiceExtensions
             )
         );
 
-        services.AddSingleton(_ =>
+        services.AddSingleton<MySqlDataSource>(_ =>
         {
             var dataSourceBuilder = new MySqlDataSourceBuilder(connectionString!);
-            var dataSource = dataSourceBuilder.Build();
-            return dataSource;
+            return dataSourceBuilder.Build();
         });
 
         return services;

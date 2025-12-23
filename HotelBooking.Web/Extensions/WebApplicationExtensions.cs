@@ -1,9 +1,8 @@
 namespace HotelBooking.Web.Extensions;
 
-using BLL.Services.DatabaseMigrationService;
 using DAL.Database.Seed;
+using DAL.Services.DatabaseMigrationService;
 using Microsoft.Extensions.Options;
-using Microsoft.OpenApi;
 using Microsoft.OpenApi.Models;
 using Shared.Common.Configurations;
 using Shared.Common.Constants;

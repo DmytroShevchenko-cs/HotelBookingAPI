@@ -31,10 +31,6 @@ namespace HotelBooking.DAL.Migrations
 
                     MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<int>("CountryId")
-                        .HasColumnType("int")
-                        .HasColumnName("country_id");
-
                     b.Property<DateTimeOffset>("CreatedAt")
                         .HasColumnType("datetime(6)")
                         .HasColumnName("created_at");
@@ -46,45 +42,13 @@ namespace HotelBooking.DAL.Migrations
                         .HasColumnName("name");
 
                     b.HasKey("Id")
-                        .HasName("pk_city");
-
-                    b.HasIndex("CountryId")
-                        .HasDatabaseName("ix_city_country_id");
+                        .HasName("pk_cities");
 
                     b.HasIndex("Name")
                         .IsUnique()
-                        .HasDatabaseName("ix_city_name");
+                        .HasDatabaseName("ix_cities_name");
 
-                    b.ToTable("city");
-                });
-
-            modelBuilder.Entity("HotelBooking.DAL.Database.Entities.Address.Country", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasColumnName("id");
-
-                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<DateTimeOffset>("CreatedAt")
-                        .HasColumnType("datetime(6)")
-                        .HasColumnName("created_at");
-
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasMaxLength(100)
-                        .HasColumnType("varchar(100)")
-                        .HasColumnName("name");
-
-                    b.HasKey("Id")
-                        .HasName("pk_country");
-
-                    b.HasIndex("Name")
-                        .IsUnique()
-                        .HasDatabaseName("ix_country_name");
-
-                    b.ToTable("country");
+                    b.ToTable("cities");
                 });
 
             modelBuilder.Entity("HotelBooking.DAL.Database.Entities.Booking.Booking", b =>
@@ -155,6 +119,10 @@ namespace HotelBooking.DAL.Migrations
                         .HasColumnType("longtext")
                         .HasColumnName("description");
 
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("tinyint(1)")
+                        .HasColumnName("is_deleted");
+
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasMaxLength(100)
@@ -200,6 +168,10 @@ namespace HotelBooking.DAL.Migrations
                         .HasColumnType("int")
                         .HasColumnName("hotel_id");
 
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("tinyint(1)")
+                        .HasColumnName("is_deleted");
+
                     b.Property<int>("PlaceAmount")
                         .HasColumnType("int")
                         .HasColumnName("place_amount");
@@ -207,6 +179,10 @@ namespace HotelBooking.DAL.Migrations
                     b.Property<long>("PricePreNight")
                         .HasColumnType("bigint")
                         .HasColumnName("price_pre_night");
+
+                    b.Property<int>("RoomNumber")
+                        .HasColumnType("int")
+                        .HasColumnName("room_number");
 
                     b.HasKey("Id")
                         .HasName("pk_rooms");
@@ -494,18 +470,6 @@ namespace HotelBooking.DAL.Migrations
                     b.ToTable("user_tokens", (string)null);
                 });
 
-            modelBuilder.Entity("HotelBooking.DAL.Database.Entities.Address.City", b =>
-                {
-                    b.HasOne("HotelBooking.DAL.Database.Entities.Address.Country", "Country")
-                        .WithMany("Cities")
-                        .HasForeignKey("CountryId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired()
-                        .HasConstraintName("fk_city_country_country_id");
-
-                    b.Navigation("Country");
-                });
-
             modelBuilder.Entity("HotelBooking.DAL.Database.Entities.Booking.Booking", b =>
                 {
                     b.HasOne("HotelBooking.DAL.Database.Entities.Hotel.Room", "Room")
@@ -534,7 +498,7 @@ namespace HotelBooking.DAL.Migrations
                         .HasForeignKey("CityId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired()
-                        .HasConstraintName("fk_hotels_city_city_id");
+                        .HasConstraintName("fk_hotels_cities_city_id");
 
                     b.Navigation("City");
                 });
@@ -615,11 +579,6 @@ namespace HotelBooking.DAL.Migrations
             modelBuilder.Entity("HotelBooking.DAL.Database.Entities.Address.City", b =>
                 {
                     b.Navigation("Hotels");
-                });
-
-            modelBuilder.Entity("HotelBooking.DAL.Database.Entities.Address.Country", b =>
-                {
-                    b.Navigation("Cities");
                 });
 
             modelBuilder.Entity("HotelBooking.DAL.Database.Entities.Hotel.Hotel", b =>

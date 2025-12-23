@@ -1,15 +1,16 @@
-namespace HotelBooking.Web.Controllers.AuthController;
+namespace HotelBooking.Web.Controllers.Auth;
 
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
-using Base;
 using DAL.Database.Entities.Identity;
+using Shared.Common.Constants;
+using Base;
 using DTOs.Identity;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.Tokens;
-using Shared.Common.Constants;
 
 [ApiController]
 [ApiExplorerSettings(GroupName = SwaggerConsts.Versions.User)]
@@ -24,7 +25,7 @@ public class AuthController : BaseApiController
         _configuration = configuration;
     }
 
-    [HttpPost("login")]
+    [HttpPost("/api/login")]
     public async Task<IActionResult> Login([FromBody] LoginDto model)
     {
         var user = await _userManager.FindByEmailAsync(model.Email);
@@ -35,9 +36,7 @@ public class AuthController : BaseApiController
             
             var authClaims = new List<Claim>
             {
-                new Claim(ClaimTypes.Name, user.UserName),
                 new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
-                new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
             };
 
             foreach (var role in userRoles)
@@ -60,5 +59,25 @@ public class AuthController : BaseApiController
             claims: authClaims,
             signingCredentials: new SigningCredentials(authSigningKey, SecurityAlgorithms.HmacSha256)
         );
+    }
+    
+    [Authorize(Policy =AuthorizationConsts.Policies.Admin)]
+    [HttpGet("/api/me")]
+    public IActionResult GetCurrentUser()
+    {
+        var user = HttpContext.User;
+
+        var result = new
+        {
+            IsAuthenticated = user.Identity?.IsAuthenticated,
+            Name = user.Identity?.Name,
+            Claims = user.Claims.Select(c => new
+            {
+                Type = c.Type,
+                Value = c.Value
+            })
+        };
+
+        return Ok(result);
     }
 }

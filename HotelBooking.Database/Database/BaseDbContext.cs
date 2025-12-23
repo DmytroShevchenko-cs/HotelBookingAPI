@@ -1,5 +1,6 @@
 namespace HotelBooking.DAL.Database;
 
+using Entities.Address;
 using Entities.Booking;
 using Entities.Hotel;
 using Entities.Identity;
@@ -14,6 +15,8 @@ public class BaseDbContext(DbContextOptions<BaseDbContext> options)
     public DbSet<Booking> Bookings { get; set; }
     public DbSet<Hotel> Hotels { get; set; }
     public DbSet<Room> Rooms { get; set; }
+    
+    public DbSet<City> Cities { get; set; }
     
     protected override void OnModelCreating(ModelBuilder builder)
     {

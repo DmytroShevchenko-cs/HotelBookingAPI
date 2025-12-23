@@ -1,6 +1,5 @@
 namespace HotelBooking.Web.Extensions;
 
-using Microsoft.OpenApi;
 using Microsoft.OpenApi.Models;
 using Shared.Common.Constants;
 
@@ -11,19 +10,22 @@ public static class SwaggerServiceExtensions
         services.AddEndpointsApiExplorer();
         services.AddSwaggerGen(options =>
         {
-            
-            options.SwaggerDoc(SwaggerConsts.AdminDocName, new OpenApiInfo { Title = SwaggerConsts.AdminDocName, Version = SwaggerConsts.UserDocName });
-            options.SwaggerDoc(SwaggerConsts.UserDocName, new OpenApiInfo { Title = SwaggerConsts.UserDocName, Version = SwaggerConsts.UserDocName });
-            
+            options.CustomSchemaIds(type => type.FullName!.Replace('+', '.'));
+
+            options.SwaggerDoc(SwaggerConsts.AdminDocName,
+                new OpenApiInfo { Title = SwaggerConsts.AdminDocName, Version = SwaggerConsts.UserDocName });
+            options.SwaggerDoc(SwaggerConsts.UserDocName,
+                new OpenApiInfo { Title = SwaggerConsts.UserDocName, Version = SwaggerConsts.UserDocName });
+
             options.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
             {
-                Description = "JWT Authorization header using the Bearer scheme",
-                Name = "Authorization",
+                Type = SecuritySchemeType.Http,
+                Scheme = "Bearer",
+                BearerFormat = "JWT",
                 In = ParameterLocation.Header,
-                Type = SecuritySchemeType.ApiKey,
-                Scheme = "Bearer"
+                Description = "Enter JWT Bearer token"
             });
-            
+
             options.AddSecurityRequirement(new OpenApiSecurityRequirement
             {
                 {
@@ -35,7 +37,7 @@ public static class SwaggerServiceExtensions
                             Id = "Bearer"
                         }
                     },
-                    new string[] { }
+                    Array.Empty<string>()
                 }
             });
         });

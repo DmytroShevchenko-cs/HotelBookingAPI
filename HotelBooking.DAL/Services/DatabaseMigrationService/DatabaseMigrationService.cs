@@ -1,6 +1,5 @@
 namespace HotelBooking.DAL.Services.DatabaseMigrationService;
 
-using BLL.Services.DatabaseMigrationService;
 using Database;
 using Microsoft.EntityFrameworkCore;
 

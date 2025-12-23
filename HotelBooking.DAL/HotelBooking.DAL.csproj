@@ -7,17 +7,12 @@
     </PropertyGroup>
 
     <ItemGroup>
-        <ProjectReference Include="..\HotelBooking.Database\HotelBooking.Database.csproj" />
-        <ProjectReference Include="..\HotelBooking.Shared\HotelBooking.Shared.csproj" />
+        <PackageReference Include="Dapper" Version="2.1.66" />
     </ItemGroup>
 
     <ItemGroup>
-      <Folder Include="Commands\Booking\CreateBooking\" />
-      <Folder Include="Commands\Hotel\CreateHotel\" />
-      <Folder Include="Commands\Rooms\CreateRoom\" />
-      <Folder Include="Oueries\Booking\GetBookingsByUserId\" />
-      <Folder Include="Oueries\Hotels\GetHotels\" />
-      <Folder Include="Oueries\Rooms\GetRoomsByHotelId\" />
+        <ProjectReference Include="..\HotelBooking.Database\HotelBooking.Database.csproj" />
+        <ProjectReference Include="..\HotelBooking.Shared\HotelBooking.Shared.csproj" />
     </ItemGroup>
     
 </Project>

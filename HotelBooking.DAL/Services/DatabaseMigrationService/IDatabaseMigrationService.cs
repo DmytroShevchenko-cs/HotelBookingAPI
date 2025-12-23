@@ -1,4 +1,4 @@
-namespace HotelBooking.BLL.Services.DatabaseMigrationService;
+namespace HotelBooking.DAL.Services.DatabaseMigrationService;
 
 public interface IDatabaseMigrationService
 {

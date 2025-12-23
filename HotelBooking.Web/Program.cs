@@ -2,6 +2,7 @@ namespace HotelBooking.Web;
 
 using System.IdentityModel.Tokens.Jwt;
 using Extensions;
+using Microsoft.AspNetCore.Diagnostics;
 
 public class Program
 {
@@ -32,6 +33,34 @@ public class Program
         app.UseConfiguredSwagger();
         
         app.MapControllers();
+        
+        app.UseExceptionHandler(appError =>
+        {
+            appError.Run(async context =>
+            {
+                context.Response.ContentType = "application/json";
+                
+                context.Response.StatusCode = context.Features.Get<IExceptionHandlerFeature>()?.Error switch
+                {
+                    KeyNotFoundException => StatusCodes.Status404NotFound,
+                    UnauthorizedAccessException => StatusCodes.Status401Unauthorized,
+                    _ => StatusCodes.Status500InternalServerError
+                };
+
+                var contextFeature = context.Features.Get<IExceptionHandlerFeature>();
+                if (contextFeature != null)
+                {
+                    var errorResponse = new
+                    {
+                        StatusCode = context.Response.StatusCode,
+                        Message = contextFeature.Error.Message,
+                        StackTrace = app.Environment.IsDevelopment() ? contextFeature.Error.StackTrace : null
+                    };
+
+                    await context.Response.WriteAsJsonAsync(errorResponse);
+                }
+            });
+        });
         
         await app.ExecuteStartupActions();
         await app.RunAsync();

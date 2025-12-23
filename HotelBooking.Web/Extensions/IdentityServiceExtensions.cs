@@ -54,7 +54,10 @@ public static class IdentityServiceExtensions
         services.AddAuthorization(options =>
         {
             options.AddPolicy(AuthorizationConsts.Policies.Admin,
-                policyUser => { policyUser.RequireRole(AuthorizationConsts.Roles.Admin.Name); });
+                policyUser =>
+                {
+                    policyUser.RequireRole(AuthorizationConsts.Roles.Admin.Name);
+                });
 
             options.AddPolicy(AuthorizationConsts.Policies.User,
                 policyUser =>

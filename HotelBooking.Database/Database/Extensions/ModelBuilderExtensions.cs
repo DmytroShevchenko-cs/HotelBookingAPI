@@ -1,9 +1,7 @@
 namespace HotelBooking.DAL.Database.Extensions;
 
-using System.Security.Claims;
 using Entities.Identity;
 using Microsoft.EntityFrameworkCore;
-using Claim = System.Security.Claims.Claim;
 
 public static class ModelBuilderExtensions
 {
