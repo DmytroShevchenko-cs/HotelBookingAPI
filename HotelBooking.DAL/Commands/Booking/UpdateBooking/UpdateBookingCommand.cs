@@ -13,7 +13,8 @@ public record UpdateBookingCommand(
     DateTimeOffset From,
     DateTimeOffset To,
     int RoomId,
-    int UserId) 
+    int UserId,
+    bool CheckOwner = true) 
     : ICommand<Result>;
 
 public class UpdateBookingCommandHandler(
@@ -33,6 +34,11 @@ public class UpdateBookingCommandHandler(
             if (booking == null)
             {
                 return Result.Failure("Booking not found");
+            }
+
+            if (request.CheckOwner && booking.UserId != request.UserId)
+            {
+                return Result.Failure("You can only update your own bookings");
             }
 
             if (request.From >= request.To)

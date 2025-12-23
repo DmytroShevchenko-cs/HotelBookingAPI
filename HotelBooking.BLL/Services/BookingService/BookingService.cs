@@ -28,7 +28,7 @@ public class BookingService(IMediator mediator) : IBookingService
         var result = await mediator.Send(query);
         return result;
     }
-
+    
     public async Task<Result> CreateBookingAsync(CreateBookingCommand command)
     {
         var result = await mediator.Send(command);

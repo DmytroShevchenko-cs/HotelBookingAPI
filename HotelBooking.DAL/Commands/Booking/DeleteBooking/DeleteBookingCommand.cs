@@ -8,7 +8,7 @@ using Shared.Common.Result;
 using MediatR;
 using Microsoft.Extensions.Logging;
 
-public record DeleteBookingCommand(int Id) 
+public record DeleteBookingCommand(int Id, int? UserId = null) 
     : ICommand<Result>;
 
 public class DeleteBookingCommandHandler(
@@ -28,6 +28,11 @@ public class DeleteBookingCommandHandler(
             if (booking == null)
             {
                 return Result.Failure("Booking not found");
+            }
+
+            if (request.UserId.HasValue && booking.UserId != request.UserId.Value)
+            {
+                return Result.Failure("You can only delete your own bookings");
             }
 
             dbContext.Bookings.Remove(booking);
