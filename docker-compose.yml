@@ -1,0 +1,57 @@
+services:
+  mysql:
+    image: mysql:8.0
+    container_name: hotelbooking-mysql
+    env_file:
+      - .env
+    environment:
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+      MYSQL_DATABASE: ${MYSQL_DATABASE}
+      MYSQL_USER: ${MYSQL_USER}
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD}
+    ports:
+      - "3306:3306"
+    volumes:
+      - mysql_data:/var/lib/mysql
+    networks:
+      - hotelbooking-network
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "root", "-p${MYSQL_ROOT_PASSWORD}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  backend:
+    build:
+      context: .
+      dockerfile: HotelBooking.Web/Dockerfile
+    container_name: hotelbooking-backend
+    ports:
+      - "5203:8080"
+    env_file:
+      - .env
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - ConnectionStrings__DefaultConnection=Server=mysql;Database=${MYSQL_DATABASE};User=${MYSQL_USER};Password=${MYSQL_PASSWORD};Port=3306;AllowUserVariables=True;UseAffectedRows=False;
+      - ServerConfig__AllowedOrigins__0=${FRONTEND_URL}
+      - JwtSettings__Secret=${JWT_SECRET}
+      - AdminConfig__DefaultAdminUserEmail=${ADMIN_EMAIL}
+      - AdminConfig__DefaultAdminUserPassword=${ADMIN_PASSWORD}
+      - AdminConfig__DefaultAdminUserFirstName=${ADMIN_FIRST_NAME}
+      - AdminConfig__DefaultAdminUserLastName=${ADMIN_LAST_NAME}
+    depends_on:
+      mysql:
+        condition: service_healthy
+    networks:
+      - hotelbooking-network
+    volumes:
+      - ./HotelBooking.Web/appsettings.json:/app/appsettings.json:ro
+
+
+networks:
+  hotelbooking-network:
+    external: true
+    name: hotelbooking-network
+
+volumes:
+  mysql_data:

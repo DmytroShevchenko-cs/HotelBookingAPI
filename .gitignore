@@ -6,3 +6,5 @@ riderModule.iml
 
 /HotelBooking.Web/appsettings.json
 .idea
+.env
+.env.local
