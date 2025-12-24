@@ -176,9 +176,9 @@ namespace HotelBooking.DAL.Migrations
                         .HasColumnType("int")
                         .HasColumnName("place_amount");
 
-                    b.Property<long>("PricePreNight")
+                    b.Property<long>("PricePerHour")
                         .HasColumnType("bigint")
-                        .HasColumnName("price_pre_night");
+                        .HasColumnName("price_per_hour");
 
                     b.Property<int>("RoomNumber")
                         .HasColumnType("int")

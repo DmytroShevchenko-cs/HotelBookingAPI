@@ -17,8 +17,12 @@ public sealed class AnalyticsController(IAnalyticsService analyticsService) : Ba
     [Route("api/admin/analytics/bookings")]
     [Produces("application/json")]
     [ProducesResponseType(typeof(Result<GetBookingsAnalyticQueryResult>), 200)]
-    public async Task<IActionResult> GetBookingsAnalyticsAsync([FromQuery] GetBookingsAnalyticQuery query)
+    public async Task<IActionResult> GetBookingsAnalyticsAsync([FromQuery] DTOs.Analytics.GetBookingsAnalytic.GetBookingsAnalyticRequestDto request)
     {
+        var query = new GetBookingsAnalyticQuery
+        {
+            Year = request.Year
+        };
         var result = await analyticsService.GetBookingAnalyticsAsync(query);
         return FromResult(result);
     }
@@ -27,8 +31,12 @@ public sealed class AnalyticsController(IAnalyticsService analyticsService) : Ba
     [Route("api/admin/analytics/incomes")]
     [Produces("application/json")]
     [ProducesResponseType(typeof(Result<GetIncomesAnalyticQueryResult>), 200)]
-    public async Task<IActionResult> GetIncomesAnalyticsAsync([FromQuery] GetIncomesAnalyticQuery query)
+    public async Task<IActionResult> GetIncomesAnalyticsAsync([FromQuery] DTOs.Analytics.GetIncomesAnalytic.GetIncomesAnalyticRequestDto request)
     {
+        var query = new GetIncomesAnalyticQuery
+        {
+            Year = request.Year
+        };
         var result = await analyticsService.GetIncomeAnalyticsAsync(query);
         return FromResult(result);
     }

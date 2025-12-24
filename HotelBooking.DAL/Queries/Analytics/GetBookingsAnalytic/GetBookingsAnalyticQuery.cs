@@ -37,15 +37,18 @@ public class GetBookingsAnalyticQueryHandler(
             var startDate = new DateTimeOffset(request.Year, 1, 1, 0, 0, 0, TimeSpan.Zero);
             var endDate = new DateTimeOffset(request.Year, 12, 31, 23, 59, 59, TimeSpan.Zero);
 
+            var fromColumn = $"`{nameof(Booking.From).ToSnakeCase()}`";
+            var bookingsTable = $"`{nameof(BaseDbContext.Bookings).ToSnakeCase()}`";
+            
             var sql = $"""
                        SELECT
-                           MONTH({nameof(Booking.From).ToSnakeCase()}) AS {nameof(BookingMonthData.Month)},
+                           MONTH({fromColumn}) AS {nameof(BookingMonthData.Month)},
                            COUNT(*) AS {nameof(BookingMonthData.BookingsCount)}
-                       FROM {nameof(BaseDbContext.Bookings).ToSnakeCase()}
-                       WHERE {nameof(Booking.From).ToSnakeCase()} >= @StartDate
-                           AND {nameof(Booking.From).ToSnakeCase()} <= @EndDate
-                       GROUP BY MONTH({nameof(Booking.From).ToSnakeCase()})
-                       ORDER BY MONTH({nameof(Booking.From).ToSnakeCase()});
+                       FROM {bookingsTable}
+                       WHERE {fromColumn} >= @StartDate
+                           AND {fromColumn} <= @EndDate
+                       GROUP BY MONTH({fromColumn})
+                       ORDER BY MONTH({fromColumn});
                        """;
 
             var bookingData = await connection.QueryAsync<BookingMonthData>(

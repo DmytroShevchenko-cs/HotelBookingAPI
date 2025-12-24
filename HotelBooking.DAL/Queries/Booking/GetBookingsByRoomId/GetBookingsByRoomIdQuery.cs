@@ -27,11 +27,11 @@ public class GetBookingsByRoomIdQueryHandler(
     {
         try
         {
-            var today = DateTimeOffset.UtcNow.Date;
+            var now = DateTimeOffset.UtcNow;
 
             var query = dbContext.Bookings
                 .Where(b => b.RoomId == request.RoomId
-                    && b.To > today)
+                    && b.To > now)
                 .Include(b => b.Room)
                     .ThenInclude(r => r.Hotel)
                 .AsQueryable();

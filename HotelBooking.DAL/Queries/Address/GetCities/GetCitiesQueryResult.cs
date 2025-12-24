@@ -9,5 +9,5 @@ public sealed class GetCitiesQueryResult
 public sealed class CityItem
 {
     public int Id { get; set; }
-    public string City { get; set; } = null!;
+    public string Name { get; set; } = null!;
 }

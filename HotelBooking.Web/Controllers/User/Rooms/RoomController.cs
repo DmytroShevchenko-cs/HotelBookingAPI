@@ -17,8 +17,20 @@ public sealed class RoomController(IRoomsService roomsService) : BaseApiControll
     [Route("api/user/rooms")]
     [Produces("application/json")]
     [ProducesResponseType(typeof(Result<GetRoomsQueryResult>), 200)]
-    public async Task<IActionResult> GetRoomsAsync([FromQuery] GetRoomsQuery query)
+    public async Task<IActionResult> GetRoomsAsync([FromQuery] DTOs.Rooms.GetRooms.GetRoomsRequestDto request)
     {
+        var query = new GetRoomsQuery
+        {
+            CityId = request.CityId ?? 0,
+            StreetSearch = request.StreetSearch,
+            PlaceAmount = request.PlaceAmount ?? 0,
+            From = request.From ?? default,
+            To = request.To ?? default,
+            PriceFrom = request.PriceFrom ?? 0,
+            PriceTo = request.PriceTo ?? 0,
+            Offset = request.Offset,
+            PageSize = request.PageSize
+        };
         var result = await roomsService.GetRoomsAsync(query);
         return FromResult(result);
     }
@@ -27,9 +39,19 @@ public sealed class RoomController(IRoomsService roomsService) : BaseApiControll
     [Route("api/user/hotels/{hotelId}/rooms")]
     [Produces("application/json")]
     [ProducesResponseType(typeof(Result<GetRoomsByHotelIdQueryResult>), 200)]
-    public async Task<IActionResult> GetRoomsByHotelIdAsync(int hotelId, [FromQuery] GetRoomsByHotelIdQuery query)
+    public async Task<IActionResult> GetRoomsByHotelIdAsync(int hotelId, [FromQuery] DTOs.Rooms.GetRoomsByHotelId.GetRoomsByHotelIdRequestDto request)
     {
-        query.HotelId = hotelId;
+        var query = new GetRoomsByHotelIdQuery
+        {
+            HotelId = hotelId,
+            PlaceAmount = request.PlaceAmount ?? 0,
+            From = request.From ?? default,
+            To = request.To ?? default,
+            PriceFrom = request.PriceFrom ?? 0,
+            PriceTo = request.PriceTo ?? 0,
+            Offset = request.Offset,
+            PageSize = request.PageSize
+        };
         var result = await roomsService.GetRoomsByHotelIdAsync(query);
         return FromResult(result);
     }

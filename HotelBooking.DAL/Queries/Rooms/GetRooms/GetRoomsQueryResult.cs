@@ -14,5 +14,5 @@ public sealed class RoomItemModel
     public int HotelId { get; set; }
     public string HotelName { get; set; } = null!;
     public int PlaceAmount { get; set; }
-    public long PricePreNight { get; set; } //in cents
+    public long PricePerHour { get; set; } //in cents per hour
 }

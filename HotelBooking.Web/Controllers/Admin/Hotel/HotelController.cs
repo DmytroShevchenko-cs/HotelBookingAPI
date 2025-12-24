@@ -19,8 +19,20 @@ public sealed class HotelController(IHotelsService hotelsService) : BaseApiContr
     [Route("api/admin/hotels")]
     [Produces("application/json")]
     [ProducesResponseType(typeof(Result<GetHotelsQueryResult>), 200)]
-    public async Task<IActionResult> GetHotelsAsync([FromQuery] GetHotelsQuery query)
+    public async Task<IActionResult> GetHotelsAsync([FromQuery] DTOs.Hotels.GetHotels.GetHotelsRequestDto request)
     {
+        var query = new GetHotelsQuery
+        {
+            CityId = request.CityId ?? 0,
+            StreetSearch = request.StreetSearch,
+            PlaceAmount = request.PlaceAmount ?? 0,
+            From = request.From ?? default,
+            To = request.To ?? default,
+            PriceFrom = request.PriceFrom ?? 0,
+            PriceTo = request.PriceTo ?? 0,
+            Offset = request.Offset,
+            PageSize = request.PageSize
+        };
         var result = await hotelsService.GetHotelsAsync(query);
         return FromResult(result);
     }
@@ -29,8 +41,14 @@ public sealed class HotelController(IHotelsService hotelsService) : BaseApiContr
     [Route("api/admin/hotels")]
     [Produces("application/json")]
     [ProducesResponseType(typeof(Result), 200)]
-    public async Task<IActionResult> CreateHotelAsync([FromBody] CreateHotelCommand command)
+    public async Task<IActionResult> CreateHotelAsync([FromBody] DTOs.Hotels.CreateHotel.CreateHotelRequestDto request)
     {
+        var command = new CreateHotelCommand(
+            request.Name,
+            request.Description,
+            request.Street,
+            request.BuildingNumber,
+            request.CityId);
         var result = await hotelsService.CreateHotelAsync(command);
         return FromResult(result);
     }
@@ -39,10 +57,16 @@ public sealed class HotelController(IHotelsService hotelsService) : BaseApiContr
     [Route("api/admin/hotels/{id}")]
     [Produces("application/json")]
     [ProducesResponseType(typeof(Result), 200)]
-    public async Task<IActionResult> UpdateHotelAsync(int id, [FromBody] UpdateHotelCommand command)
+    public async Task<IActionResult> UpdateHotelAsync(int id, [FromBody] DTOs.Hotels.UpdateHotel.UpdateHotelRequestDto request)
     {
-        var updateCommand = command with { Id = id };
-        var result = await hotelsService.UpdateHotelAsync(updateCommand);
+        var command = new UpdateHotelCommand(
+            id,
+            request.Name,
+            request.Description,
+            request.Street,
+            request.BuildingNumber,
+            request.CityId);
+        var result = await hotelsService.UpdateHotelAsync(command);
         return FromResult(result);
     }
 

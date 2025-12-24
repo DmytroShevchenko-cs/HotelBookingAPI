@@ -43,12 +43,12 @@ public class UpdateBookingCommandHandler(
 
             if (request.From >= request.To)
             {
-                return Result.Failure("Check-out date must be after check-in date");
+                return Result.Failure("End date and time must be after start date and time");
             }
 
             if (request.From < DateTimeOffset.UtcNow)
             {
-                return Result.Failure("Check-in date cannot be in the past");
+                return Result.Failure("Start date and time cannot be in the past");
             }
 
             var roomExists = await dbContext.Rooms
@@ -67,15 +67,18 @@ public class UpdateBookingCommandHandler(
                 return Result.Failure("User not found");
             }
 
+            var oneHour = TimeSpan.FromHours(1);
+            var requestToWithGap = request.To + oneHour;
+            var requestFromWithGap = request.From - oneHour;
             var hasOverlappingBookings = await dbContext.Bookings
                 .AnyAsync(b => b.RoomId == request.RoomId
                     && b.Id != request.Id
-                    && b.From < request.To
-                    && b.To > request.From, cancellationToken);
+                    && b.From < requestToWithGap
+                    && b.To > requestFromWithGap, cancellationToken);
             
             if (hasOverlappingBookings)
             {
-                return Result.Failure("Room is not available for the selected dates");
+                return Result.Failure("Room is not available for the selected date and time range");
             }
 
             booking.From = request.From;

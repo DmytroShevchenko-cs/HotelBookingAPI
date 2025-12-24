@@ -56,12 +56,12 @@ public class GetRoomsQueryHandler(
 
             if (request.PriceFrom > 0)
             {
-                query = query.Where(r => r.PricePreNight >= request.PriceFrom);
+                query = query.Where(r => r.PricePerHour >= request.PriceFrom);
             }
 
             if (request.PriceTo > 0)
             {
-                query = query.Where(r => r.PricePreNight <= request.PriceTo);
+                query = query.Where(r => r.PricePerHour <= request.PriceTo);
             }
 
             if (request.From != default && request.To != default)
@@ -91,7 +91,7 @@ public class GetRoomsQueryHandler(
                     HotelId = r.HotelId,
                     HotelName = r.Hotel.Name,
                     PlaceAmount = r.PlaceAmount,
-                    PricePreNight = r.PricePreNight
+                    PricePerHour = r.PricePerHour
                 })
                 .ToListAsync(cancellationToken);
 

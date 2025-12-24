@@ -21,10 +21,15 @@ public sealed class BookingController(IBookingService bookingService) : BaseApiC
     [Route("api/user/bookings")]
     [Produces("application/json")]
     [ProducesResponseType(typeof(Result<GetBookingsByUserIdQueryResult>), 200)]
-    public async Task<IActionResult> GetBookingsByUserIdAsync([FromQuery] GetBookingsByUserIdQuery query)
+    public async Task<IActionResult> GetBookingsByUserIdAsync([FromQuery] DTOs.Bookings.GetBookingsByUserId.GetBookingsByUserIdRequestDto request)
     {
         var userId = int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier) ?? "0");
-        query.UserId = userId;
+        var query = new GetBookingsByUserIdQuery
+        {
+            UserId = userId,
+            Offset = request.Offset,
+            PageSize = request.PageSize
+        };
         var result = await bookingService.GetBookingsByUserIdAsync(query);
         return FromResult(result);
     }
@@ -33,9 +38,12 @@ public sealed class BookingController(IBookingService bookingService) : BaseApiC
     [Route("api/user/rooms/{roomId}/bookings")]
     [Produces("application/json")]
     [ProducesResponseType(typeof(Result<GetBookingsByRoomIdQueryResult>), 200)]
-    public async Task<IActionResult> GetBookingsByRoomIdAsync(int roomId, [FromQuery] GetBookingsByRoomIdQuery query)
+    public async Task<IActionResult> GetBookingsByRoomIdAsync(int roomId, [FromQuery] DTOs.Bookings.GetBookingsByRoomId.GetBookingsByRoomIdRequestDto request)
     {
-        query.RoomId = roomId;
+        var query = new GetBookingsByRoomIdQuery
+        {
+            RoomId = roomId
+        };
         var result = await bookingService.GetBookingsByRoomIdAsync(query);
         return FromResult(result);
     }
@@ -44,11 +52,15 @@ public sealed class BookingController(IBookingService bookingService) : BaseApiC
     [Route("api/user/bookings")]
     [Produces("application/json")]
     [ProducesResponseType(typeof(Result), 200)]
-    public async Task<IActionResult> CreateBookingAsync([FromBody] CreateBookingCommand command)
+    public async Task<IActionResult> CreateBookingAsync([FromBody] DTOs.Bookings.CreateBooking.CreateBookingRequestDto request)
     {
         var userId = int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier) ?? "0");
-        var createCommand = command with { UserId = userId };
-        var result = await bookingService.CreateBookingAsync(createCommand);
+        var command = new CreateBookingCommand(
+            request.From,
+            request.To,
+            request.RoomId,
+            userId);
+        var result = await bookingService.CreateBookingAsync(command);
         return FromResult(result);
     }
 
@@ -56,11 +68,17 @@ public sealed class BookingController(IBookingService bookingService) : BaseApiC
     [Route("api/user/bookings/{id}")]
     [Produces("application/json")]
     [ProducesResponseType(typeof(Result), 200)]
-    public async Task<IActionResult> UpdateBookingAsync(int id, [FromBody] UpdateBookingCommand command)
+    public async Task<IActionResult> UpdateBookingAsync(int id, [FromBody] DTOs.Bookings.UpdateBooking.UpdateBookingRequestDto request)
     {
         var userId = int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier) ?? "0");
-        var updateCommand = command with { Id = id, UserId = userId, CheckOwner = true };
-        var result = await bookingService.UpdateBookingAsync(updateCommand);
+        var command = new UpdateBookingCommand(
+            id,
+            request.From,
+            request.To,
+            request.RoomId,
+            userId,
+            true);
+        var result = await bookingService.UpdateBookingAsync(command);
         return FromResult(result);
     }
 

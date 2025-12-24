@@ -10,7 +10,7 @@ public class Room : BaseEntity
     public Hotel Hotel { get; set; } = null!;
 
     public int PlaceAmount { get; set; }
-    public long PricePreNight { get; set; } //in cents
+    public long PricePerHour { get; set; } //in cents per hour
 
     public bool IsDeleted { get; set; }
 

@@ -40,7 +40,7 @@ public class GetCitiesQueryHandler(
                 .Select(c => new CityItem
                 {
                     Id = c.Id,
-                    City = c.Name
+                    Name = c.Name
                 })
                 .ToListAsync(cancellationToken);
 

@@ -1,3 +1,7 @@
 namespace HotelBooking.Web.DTOs.Identity;
 
-public record RegisterDto(string Email, string Password, string FirstName, string LastName, string PhoneNumber);
+public record RegisterDto(
+    string Email,
+    string Password,
+    string FirstName,
+    string LastName);

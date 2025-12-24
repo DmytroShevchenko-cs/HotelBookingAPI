@@ -15,7 +15,7 @@ public sealed class BookingItemModel
     
     public int RoomNumber { get; set; }
     public int PlaceAmount { get; set; }
-    public int PricePreNight { get; set; }
+    public int PricePerHour { get; set; }
     
     public int HotelId { get; set; }
     public string HotelName { get; set; } = null!;

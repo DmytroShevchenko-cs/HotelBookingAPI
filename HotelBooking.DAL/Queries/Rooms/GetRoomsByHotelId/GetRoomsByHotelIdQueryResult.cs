@@ -12,5 +12,5 @@ public sealed class RoomItemModel
     public int Id { get; set; }
     public int RoomNumber { get; set; }
     public int PlaceAmount { get; set; }
-    public long PricePreNight { get; set; } //in cents
+    public long PricePerHour { get; set; } //in cents per hour
 }

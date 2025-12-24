@@ -13,7 +13,7 @@ public record CreateRoomCommand(
     int RoomNumber,
     int HotelId,
     int PlaceAmount,
-    long PricePreNight) 
+    long PricePerHour) 
     : ICommand<Result>;
 
 public class CreateRoomCommandHandler(
@@ -50,7 +50,7 @@ public class CreateRoomCommandHandler(
                 RoomNumber = request.RoomNumber,
                 HotelId = request.HotelId,
                 PlaceAmount = request.PlaceAmount,
-                PricePreNight = request.PricePreNight,
+                PricePerHour = request.PricePerHour,
                 CreatedAt = DateTimeOffset.UtcNow
             };
 

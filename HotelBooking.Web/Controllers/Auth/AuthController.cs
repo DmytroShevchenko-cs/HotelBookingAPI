@@ -50,6 +50,43 @@ public class AuthController : BaseApiController
         return Unauthorized();
     }
 
+    [HttpPost("/api/register")]
+    public async Task<IActionResult> Register([FromBody] RegisterDto model)
+    {
+        var existingUser = await _userManager.FindByEmailAsync(model.Email);
+        if (existingUser != null)
+        {
+            return BadRequest(new { error = "User with this email already exists" });
+        }
+
+        var user = new User
+        {
+            Email = model.Email,
+            UserName = model.Email,
+            FirstName = model.FirstName,
+            LastName = model.LastName,
+            CreatedAt = DateTimeOffset.UtcNow
+        };
+
+        var result = await _userManager.CreateAsync(user, model.Password);
+        
+        if (!result.Succeeded)
+        {
+            return BadRequest(new { errors = result.Errors.Select(e => e.Description) });
+        }
+
+        await _userManager.AddToRoleAsync(user, AuthorizationConsts.Roles.User.Name);
+
+        var authClaims = new List<Claim>
+        {
+            new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
+            new Claim(ClaimTypes.Role, AuthorizationConsts.Roles.User.Name)
+        };
+
+        var token = GenerateToken(authClaims);
+        return Ok(new { token = new JwtSecurityTokenHandler().WriteToken(token), expiration = token.ValidTo });
+    }
+
     private JwtSecurityToken GenerateToken(List<Claim> authClaims)
     {
         var authSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["JwtSettings:Secret"] ?? string.Empty));

@@ -38,17 +38,26 @@ public class GetIncomesAnalyticQueryHandler(
             var startDate = new DateTimeOffset(request.Year, 1, 1, 0, 0, 0, TimeSpan.Zero);
             var endDate = new DateTimeOffset(request.Year, 12, 31, 23, 59, 59, TimeSpan.Zero);
 
+            var fromColumn = $"`{nameof(Booking.From).ToSnakeCase()}`";
+            var toColumn = $"`{nameof(Booking.To).ToSnakeCase()}`";
+            var roomIdColumn = $"`{nameof(Booking.RoomId).ToSnakeCase()}`";
+            var priceColumn = $"`{nameof(Room.PricePerHour).ToSnakeCase()}`";
+            var idColumn = $"`{nameof(Room.Id).ToSnakeCase()}`";
+            var isDeletedColumn = $"`{nameof(Room.IsDeleted).ToSnakeCase()}`";
+            var bookingsTable = $"`{nameof(BaseDbContext.Bookings).ToSnakeCase()}`";
+            var roomsTable = $"`{nameof(BaseDbContext.Rooms).ToSnakeCase()}`";
+            
             var sql = $"""
                 SELECT
-                    MONTH(b.{nameof(Booking.From).ToSnakeCase()}) AS {nameof(IncomeMonthData.Month)},
-                    SUM(DATEDIFF(b.{nameof(Booking.To).ToSnakeCase()}, b.{nameof(Booking.From).ToSnakeCase()}) * r.{nameof(Room.PricePreNight).ToSnakeCase()}) AS {nameof(IncomeMonthData.TotalIncome)}
-                FROM {nameof(BaseDbContext.Bookings).ToSnakeCase()} b
-                INNER JOIN {nameof(BaseDbContext.Rooms).ToSnakeCase()} r ON b.{nameof(Booking.RoomId).ToSnakeCase()} = r.{nameof(Room.Id).ToSnakeCase()}
-                WHERE b.{nameof(Booking.From).ToSnakeCase()} >= @StartDate
-                    AND b.{nameof(Booking.From).ToSnakeCase()} <= @EndDate
-                    AND r.{nameof(Room.IsDeleted).ToSnakeCase()} = 0
-                GROUP BY MONTH(b.{nameof(Booking.From).ToSnakeCase()})
-                ORDER BY MONTH(b.{nameof(Booking.From).ToSnakeCase()});
+                    MONTH(b.{fromColumn}) AS {nameof(IncomeMonthData.Month)},
+                    SUM(TIMESTAMPDIFF(HOUR, b.{fromColumn}, b.{toColumn}) * r.{priceColumn}) AS {nameof(IncomeMonthData.TotalIncome)}
+                FROM {bookingsTable} b
+                INNER JOIN {roomsTable} r ON b.{roomIdColumn} = r.{idColumn}
+                WHERE b.{fromColumn} >= @StartDate
+                    AND b.{fromColumn} <= @EndDate
+                    AND r.{isDeletedColumn} = 0
+                GROUP BY MONTH(b.{fromColumn})
+                ORDER BY MONTH(b.{fromColumn});
                 """;
 
             var incomeData = await connection.QueryAsync<IncomeMonthData>(

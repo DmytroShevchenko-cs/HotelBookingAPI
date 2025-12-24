@@ -57,17 +57,17 @@ public class GetHotelsQueryHandler(
 
                 if (request.PlaceAmount > 0)
                 {
-                    roomsQuery = roomsQuery.Where(r => r.PlaceAmount >= request.PlaceAmount);
+                    roomsQuery = roomsQuery.Where(r => r.PlaceAmount == request.PlaceAmount);
                 }
 
                 if (request.PriceFrom > 0)
                 {
-                    roomsQuery = roomsQuery.Where(r => r.PricePreNight >= request.PriceFrom);
+                    roomsQuery = roomsQuery.Where(r => r.PricePerHour >= request.PriceFrom);
                 }
 
                 if (request.PriceTo > 0)
                 {
-                    roomsQuery = roomsQuery.Where(r => r.PricePreNight <= request.PriceTo);
+                    roomsQuery = roomsQuery.Where(r => r.PricePerHour <= request.PriceTo);
                 }
 
                 if (request.From != default && request.To != default)

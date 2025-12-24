@@ -47,7 +47,7 @@ public class GetBookingsByHotelIdQueryHandler(
                     To = b.To,
                     RoomNumber = b.Room.RoomNumber,
                     PlaceAmount = b.Room.PlaceAmount,
-                    PricePreNight = (int)b.Room.PricePreNight,
+                    PricePerHour = (int)b.Room.PricePerHour,
                     HotelId = b.Room.HotelId,
                     HotelName = b.Room.Hotel.Name
                 })

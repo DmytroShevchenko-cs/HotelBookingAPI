@@ -13,22 +13,30 @@ using Microsoft.AspNetCore.Mvc;
 [ApiExplorerSettings(GroupName = SwaggerConsts.Versions.User)]
 public sealed class AddressController(IAddressService addressService) : BaseApiController
 {
-    [HttpPost]
+    [HttpGet]
     [Produces("application/json")]
     [Route("api/selectors/cities")]
     [ProducesResponseType(typeof(Result<GetCitiesQueryResult>), 200)]
-    public async Task<IActionResult> GetCitiesAsync([FromForm] GetCitiesQuery query)
+    public async Task<IActionResult> GetCitiesAsync([FromQuery] DTOs.Address.GetCities.GetCitiesRequestDto request)
     {
+        var query = new GetCitiesQuery
+        {
+            SearchString = request.SearchString
+        };
         var result = await addressService.GetCitiesAsync(query);
         return FromResult(result);
     }
     
-    [HttpPost]
+    [HttpGet]
     [Produces("application/json")]
     [Route("api/selectors/cities/used")]
     [ProducesResponseType(typeof(Result<GetUsedCitiesQueryResult>), 200)]
-    public async Task<IActionResult> GetUsedCitiesAsync([FromForm] GetUsedCitiesQuery query)
+    public async Task<IActionResult> GetUsedCitiesAsync([FromQuery] DTOs.Address.GetUsedCities.GetUsedCitiesRequestDto request)
     {
+        var query = new GetUsedCitiesQuery
+        {
+            SearchString = request.SearchString
+        };
         var result = await addressService.GetUsedCitiesAsync(query);
         return FromResult(result);
     }

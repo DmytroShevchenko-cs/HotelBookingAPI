@@ -13,7 +13,7 @@ public record UpdateRoomCommand(
     int RoomNumber,
     int HotelId,
     int PlaceAmount,
-    long PricePreNight) 
+    long PricePerHour) 
     : ICommand<Result>;
 
 public class UpdateRoomCommandHandler(
@@ -57,7 +57,7 @@ public class UpdateRoomCommandHandler(
             room.RoomNumber = request.RoomNumber;
             room.HotelId = request.HotelId;
             room.PlaceAmount = request.PlaceAmount;
-            room.PricePreNight = request.PricePreNight;
+            room.PricePerHour = request.PricePerHour;
 
             await dbContext.SaveChangesAsync(cancellationToken);
 
