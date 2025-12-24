@@ -50,7 +50,6 @@ services:
 
 networks:
   hotelbooking-network:
-    external: true
     name: hotelbooking-network
 
 volumes:
